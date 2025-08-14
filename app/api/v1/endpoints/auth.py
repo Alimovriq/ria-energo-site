@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -70,7 +70,19 @@ async def login_user(request: Request, db: AsyncSession = Depends(get_db)):
     return response
 
 
-@router.post("/api/v1/auth/registration", response_model=UserRegisterResponse)
+@router.get("/api/v1/auth/logout")
+async def logout(response: Response):
+    """
+    Удаляет куки для выхода пользователя
+    :param response:
+    :return:
+    """
+
+    response.delete_cookie("access_token")
+    return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Logged out"})
+
+
+@router.post("/api/v1/auth/registration")
 async def register_user(user_data: UserRegisterRequest, db: AsyncSession = Depends(get_db)):
     """
     Регистрация нового пользователя
@@ -99,3 +111,7 @@ async def register_user(user_data: UserRegisterRequest, db: AsyncSession = Depen
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
+
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content=dict(user_data))
