@@ -1,0 +1,53 @@
+<div class="container px-4 px-lg-5">
+<!--    <a class="navbar-brand" href="../logo_images/logo.jpg">{{ title }}</a>-->
+    <a class="navbar-brand" href="/">
+        <img src="../static/logo_images/logo.jpg" alt="РИА-Энерго" style="height: 40px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Главная</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">О компании</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Каталог</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">Продукция</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="#!">Popular Items</a></li>
+                    <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="d-flex">
+            <a href="/login" class="btn btn-outline-light me-2">Войти</a>
+            <a href="/registration" class="btn btn-light">Регистрация</a>
+        </div>
+
+        <!-- Блок с контактами -->
+        <div class="d-flex align-items-center me-3">
+            <!-- Время работы -->
+            <div class="me-3 d-none d-md-block">
+                <i class="bi bi-clock me-1"></i>
+                <span>Пн-Пт: 9:00-18:00</span>
+            </div>
+
+            <!-- Телефон -->
+            <div>
+                <a href="tel:+74951234567" class="text-decoration-none">
+                    <i class="bi bi-telephone me-1"></i>
+                    <span class="d-none d-lg-inline">+7 (495) 123-45-67</span>
+                    <span class="d-lg-none">Позвонить</span>
+                </a>
+            </div>
+        </div>
+
+
+        <form class="d-flex">
+            <button class="btn btn-outline-dark" type="submit">
+                <i class="bi-cart-fill me-1"></i>
+                Корзина
+                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+            </button>
+        </form>
+    </div>
+</div>

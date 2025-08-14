@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="auth-container bg-white">
+        <h2 class="text-center mb-4">Вход в аккаунт</h2>
+        <p class="text-center text-muted mb-4">Введите свои данные для входа в систему</p>
+
+        <form id="loginForm"
+              enctype="application/x-www-form-urlencoded"
+              novalidate>
+            <!-- Email -->
+            <div class="form-floating mb-3">
+                <!-- Изменяем name на username для совместимости с OAuth2PasswordRequestForm -->
+                <input type="email"
+                       class="form-control"
+                       id="loginEmail"
+                       name="username"
+                       placeholder="name@example.com"
+                       required>
+                <label for="loginEmail">Email*</label>
+                <div class="invalid-feedback">Пожалуйста, укажите корректный email</div>
+            </div>
+
+            <!-- Пароль -->
+            <div class="form-floating mb-3 position-relative">
+                <input type="password"
+                       class="form-control"
+                       id="loginPassword"
+                       name="password"
+                       placeholder="Пароль"
+                       required>
+                <label for="loginPassword">Пароль*</label>
+                <i class="bi bi-eye-slash password-toggle" id="toggleLoginPassword"></i>
+                <div class="invalid-feedback">Пожалуйста, введите пароль</div>
+            </div>
+
+            <!-- Запомнить меня + Забыли пароль -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Запомнить меня</label>
+                </div>
+                <a href="/forgot-password" class="text-decoration-none">Забыли пароль?</a>
+            </div>
+
+            <!-- Кнопка входа -->
+            <button class="btn btn-primary w-100 py-2 mb-3" type="submit">Войти</button>
+
+            <!-- Социальные сети -->
+            <div class="divider">или войти с помощью</div>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="#" class="btn btn-outline-dark">
+                    <i class="bi bi-google"></i> Google
+                </a>
+                <a href="#" class="btn btn-outline-primary">
+                    <i class="bi bi-facebook"></i> Facebook
+                </a>
+            </div>
+        </form>
+
+        <!-- Ссылка на регистрацию -->
+        <div class="text-center mt-4">
+            <p>Ещё нет аккаунта? <a href="/registration">Зарегистрируйтесь</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

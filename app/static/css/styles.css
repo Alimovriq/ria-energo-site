@@ -10824,3 +10824,51 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+.text-content {
+    line-height: 1.7;
+    font-size: 1.05rem;
+    text-align: justify;  /* Выравнивание по ширине */
+    hyphens: auto;       /* Переносы слов */
+}
+
+.text-content p {
+    margin-bottom: 1.2rem;
+}
+
+.auth-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+.form-floating label {
+    padding: 1rem 1.75rem;
+}
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 5;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #6c757d;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+.divider::before {
+    margin-right: 1rem;
+}
+.divider::after {
+    margin-left: 1rem;
+}

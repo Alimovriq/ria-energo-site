@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Основной контент -->
+    <div class="container py-5">
+        <div class="auth-container bg-white">
+            <h2 class="text-center mb-4">Создать аккаунт</h2>
+            <p class="text-center text-muted mb-4">Заполните форму для регистрации в системе</p>
+
+            <form id="registrationForm" novalidate>
+                <div class="row g-3">
+                    <!-- Личные данные -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="firstName" placeholder="Иван" required>
+                            <label for="firstName">Имя*</label>
+                            <div class="invalid-feedback">Пожалуйста, укажите ваше имя</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="lastName" placeholder="Петров" required>
+                            <label for="lastName">Фамилия*</label>
+                            <div class="invalid-feedback">Пожалуйста, укажите вашу фамилию</div>
+                        </div>
+                    </div>
+
+                    <!-- Контактные данные -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                            <label for="email">Email*</label>
+                            <div class="invalid-feedback">Пожалуйста, укажите корректный email</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="phone" placeholder="+7 (999) 123-45-67" required>
+                            <label for="phone">Телефон*</label>
+                            <div class="invalid-feedback">Пожалуйста, укажите телефон</div>
+                        </div>
+                    </div>
+
+                    <!-- Пароль -->
+                    <div class="col-md-6">
+                        <div class="form-floating position-relative">
+                            <input type="password" class="form-control" id="password" placeholder="Пароль" required minlength="8">
+                            <label for="password">Пароль*</label>
+                            <i class="bi bi-eye-slash password-toggle" id="togglePassword"></i>
+                            <div class="invalid-feedback">Пароль должен содержать минимум 8 символов</div>
+                        </div>
+                        <div class="form-text">Минимум 8 символов</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating position-relative">
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Подтвердите пароль" required>
+                            <label for="confirmPassword">Подтвердите пароль*</label>
+                            <i class="bi bi-eye-slash password-toggle" id="toggleConfirmPassword"></i>
+                            <div class="invalid-feedback">Пароли не совпадают</div>
+                        </div>
+                    </div>
+
+                    <!-- Компания -->
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="company" placeholder="ООО 'ТехноПром'">
+                            <label for="company">Название компании</label>
+                        </div>
+                    </div>
+
+                    <!-- Соглашения -->
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                Я согласен с <a href="/terms">условиями использования</a> и <a href="/privacy">политикой конфиденциальности</a>*
+                            </label>
+                            <div class="invalid-feedback">Необходимо ваше согласие</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="newsletter">
+                            <label class="form-check-label" for="newsletter">
+                                Я хочу получать новости и специальные предложения
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 py-2" type="submit">Зарегистрироваться</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="divider">или</div>
+
+            <div class="text-center">
+                <p>Уже есть аккаунт? <a href="/login">Войдите</a></p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#" class="btn btn-outline-dark">
+                        <i class="bi bi-google"></i> Google
+                    </a>
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="bi bi-facebook"></i> Facebook
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
