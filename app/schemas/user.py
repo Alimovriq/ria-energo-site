@@ -34,3 +34,10 @@ class UserRegisterResponse(BaseModel):
     first_name: str
     last_name: str
     phone: Optional[str] = None
+
+
+class UserUpdateRequest(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
+    password: Optional[str] = None
