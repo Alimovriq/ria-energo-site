@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status, Response
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from datetime import timedelta
 
 from app.models.user import User
@@ -118,7 +118,7 @@ async def register_user(user_data: UserRegisterRequest, db: AsyncSession = Depen
         content=dict(user_data))
 
 
-@router.patch("/api/v1/auth/me", response_model=UserUpdateRequest)
+@router.patch("/api/v1/users/me", response_model=UserUpdateRequest)
 async def update_user_me(
         update_data: UserUpdateRequest,
         current_user: User = Depends(get_current_user),
@@ -157,4 +157,23 @@ async def update_user_me(
             "last_name": updated_user.last_name,
             "phone": updated_user.phone,
         }
+    )
+
+
+@router.get("api/v1/users/me")
+async def get_user_profile(user: User = Depends(get_current_user)) -> User:
+    return user
+
+
+@router.delete("api/v1/users/me")
+async def delete_user_profile(
+        current_user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db)):
+
+    await db.execute(delete(User).where(User.id == current_user.id))
+    await db.commit()
+
+    return JSONResponse(
+        status_code=status.HTTP_204_NO_CONTENT,
+        content={"message": f"User: {current_user.email} was deleted"}
     )

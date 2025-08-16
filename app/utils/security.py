@@ -14,7 +14,7 @@ from app.models.user import User
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
+async def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now() + expires_delta
