@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 
 from typing import Optional
 
@@ -41,3 +41,22 @@ class UserUpdateRequest(BaseModel):
     last_name: Optional[str] = None
     phone: Optional[str] = None
     password: Optional[str] = None
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+    @field_validator("new_password")
+    def validate_password(cls, password: str) -> str | None:
+        if len(password) < 8:
+            raise ValueError("Password is too short")
+        if not any(char.isdigit() for char in password):
+            raise ValueError("Password must contain one or more digit")
+        if not any(char.isalpha() and char == char.upper() for char in password):
+            raise ValueError("Password must contain one or more upper char")
+        if not any(char.isalpha() and char == char.lower() for char in password):
+            raise ValueError("Password must contain one or more lower char")
+        if not any(symbol in password for symbol in set(".,/=-)(*&^%$#@!?^+_")):
+            raise ValueError("Password must contain one or more symbol")
+

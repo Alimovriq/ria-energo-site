@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Response, BackgroundTasks
 from fastapi.responses import JSONResponse
+from fastapi_mail import FastMail, MessageSchema, MessageType
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from datetime import timedelta
@@ -8,11 +10,12 @@ from app.models.user import User
 from app.db.database import get_db
 from app.utils.password import verify_password
 from app.utils.security import create_access_token
-from app.db.config import settings
-from app.utils.security import get_current_user
+from app.core.config import settings
+from app.core.email import email_conf
+from app.utils.security import get_current_user, verify_password_by_token
 from app.schemas.utils import TokenResponse
 
-from app.schemas.user import UserRegisterRequest, UserUpdateRequest
+from app.schemas.user import UserRegisterRequest, UserUpdateRequest, ResetPasswordRequest
 from app.utils.password import get_password_hash
 
 router = APIRouter()
@@ -44,7 +47,7 @@ async def login_user(request: Request, db: AsyncSession = Depends(get_db)):
         )
 
     print(f"Создание токена...")
-    access_token = create_access_token(
+    access_token = await create_access_token(
         data={"sub": user.email},
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
@@ -160,12 +163,12 @@ async def update_user_me(
     )
 
 
-@router.get("api/v1/users/me")
-async def get_user_profile(user: User = Depends(get_current_user)) -> User:
+@router.get("/api/v1/users/me")
+async def get_user_profile(user: User = Depends(get_current_user)):
     return user
 
 
-@router.delete("api/v1/users/me")
+@router.delete("/api/v1/users/me", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_profile(
         current_user: User = Depends(get_current_user),
         db: AsyncSession = Depends(get_db)):
@@ -173,7 +176,59 @@ async def delete_user_profile(
     await db.execute(delete(User).where(User.id == current_user.id))
     await db.commit()
 
-    return JSONResponse(
-        status_code=status.HTTP_204_NO_CONTENT,
-        content={"message": f"User: {current_user.email} was deleted"}
+    # return JSONResponse(
+    #     status_code=status.HTTP_204_NO_CONTENT,
+    #     content={"message": f"User was deleted"}
+    # )
+
+# Создать endpoint для восстановления пароля:
+# автоматическая генерация пароля + сброс токена и отправка письма на email.
+
+@router.post("/api/v1/auth/forgot-password")
+async def forgot_password(
+        email: EmailStr,
+        background_tasks: BackgroundTasks,
+        db: AsyncSession = Depends(get_db)):
+
+    user = await db.execute(select(User).where(User.email == email))
+    if not user.scalar_one_or_none():
+        return {"message": "If email exists, reset link sent"}
+
+    access_token = create_access_token(
+        data={"sub": email},
+        expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
+
+    reset_url =  f"https://localhost/reset-password?token={access_token}"
+    message = MessageSchema(
+        subject="Сброс пароля",
+        recipients=[email],
+        body=f"Перейдите по ссылке для сброса пароля: {reset_url}",
+        subtype=MessageType.plain
+    )
+
+    background_tasks.add_task(FastMail(email_conf).send_message, message)
+
+    return {"message": "Reset link sent"}
+
+
+@router.post("/reset-password")
+async def reset_password(
+        data: ResetPasswordRequest,
+        db: AsyncSession = Depends(get_db)):
+
+    email = verify_password_by_token(data.token)
+    if not email:
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content="Invalid or expired token"
+        )
+
+    user = await db.execute(select(User).where(email == User.email))
+    user = user.scalar_one_or_none()
+
+    user.hashed_password = get_password_hash(data.new_password)
+
+    await db.commit()
+
+    return {"message": "Password updated"}

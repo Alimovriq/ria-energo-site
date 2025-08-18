@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.db.config import settings
+from app.core.config import settings
 from app.db.database import get_db
 from app.models.user import User
 
@@ -30,7 +30,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         if token.startswith("Bearer "):
             token = token[7:]
 
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = await jwt_decoder(token)
         email = payload.get("sub")
         if email is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
@@ -43,3 +43,24 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     return user
+
+
+async def verify_password_by_token(token: str) -> str | None:
+    """
+    Принимает токен и возвращает email, если токен действующий
+    :param token:
+    :return:
+    """
+
+    try:
+        payload = await jwt_decoder(token)
+        email = payload.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return email
+
+
+async def jwt_decoder(token):
+    return jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
+
+
