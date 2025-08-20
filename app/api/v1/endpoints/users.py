@@ -20,7 +20,6 @@ from app.utils.password import get_password_hash
 router = APIRouter()
 
 
-
 @router.patch("/users/me", response_model=UserUpdateRequest)
 async def update_user_me(
         update_data: UserUpdateRequest,

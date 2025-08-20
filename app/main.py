@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from .db.database import engine, Base
 from .frontend.routes import home, about, login, registration
 from .api.v1.endpoints import auth, users
+from .api.v1.endpoints.products import products
 
 
 @asynccontextmanager
@@ -36,6 +37,7 @@ app.include_router(login.router)
 
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
+app.include_router(products.router, prefix="/api/v1")
 
 # Подключение статических файлов
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
