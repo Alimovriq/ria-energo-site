@@ -59,4 +59,8 @@ class ResetPasswordRequest(BaseModel):
             raise ValueError("Password must contain one or more lower char")
         if not any(symbol in password for symbol in set(".,/=-)(*&^%$#@!?^+_")):
             raise ValueError("Password must contain one or more symbol")
+        return password
 
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
